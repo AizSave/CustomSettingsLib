@@ -139,7 +139,7 @@ Since this library isn't published on Maven Central, you'll need to add it manua
     }
    ```
    
-4. [OPTIONAL RECOMMENDATION] If you want to display an error when this mod is not installed then you can do this process in other method of an aside class of the mod entry and adds a try catch block
+4. (Optional) Dependency Safety. If you want to throw an error when the library isn’t installed, wrap initialization in a `try/catch`:
 
    Example:  
 
