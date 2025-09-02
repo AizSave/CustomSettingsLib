@@ -1,6 +1,6 @@
-package customsettingsui.components.settings;
+package customsettingslib.components.settings;
 
-import customsettingsui.components.CustomModSetting;
+import customsettingslib.components.CustomModSetting;
 import necesse.engine.gameLoop.tickManager.TickManager;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;

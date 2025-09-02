@@ -1,12 +1,14 @@
-package customsettingsui.components.settings;
+package customsettingslib.components.settings;
 
-import customsettingsui.components.CustomModSetting;
+import customsettingslib.components.CustomModSetting;
 import necesse.engine.localization.message.GameMessage;
 import necesse.engine.localization.message.LocalMessage;
 import necesse.engine.localization.message.StaticMessage;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
-import necesse.gfx.forms.components.*;
+import necesse.gfx.forms.components.FormContentBox;
+import necesse.gfx.forms.components.FormDropdownSelectionButton;
+import necesse.gfx.forms.components.FormInputSize;
 import necesse.gfx.ui.ButtonColor;
 
 import java.util.concurrent.atomic.AtomicReference;

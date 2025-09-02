@@ -1,4 +1,4 @@
-package customsettingsui;
+package customsettingslib;
 
 import necesse.engine.modLoader.annotations.ModEntry;
 

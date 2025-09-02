@@ -1,7 +1,7 @@
-package customsettingsui.forms;
+package customsettingslib.forms;
 
-import customsettingsui.settings.CustomModSettings;
-import customsettingsui.patches.SettingsFormPatches;
+import customsettingslib.patches.SettingsFormPatches;
+import customsettingslib.settings.CustomModSettings;
 import necesse.engine.window.WindowManager;
 import necesse.gfx.forms.Form;
 import necesse.gfx.forms.components.FormContentBox;

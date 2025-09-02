@@ -1,7 +1,7 @@
-package customsettingsui.patches;
+package customsettingslib.patches;
 
-import customsettingsui.forms.CustomModSettingsForm;
-import customsettingsui.forms.ModSettingsForm;
+import customsettingslib.forms.CustomModSettingsForm;
+import customsettingslib.forms.ModSettingsForm;
 import necesse.engine.modLoader.annotations.ModConstructorPatch;
 import necesse.engine.modLoader.annotations.ModMethodPatch;
 import necesse.engine.network.client.Client;

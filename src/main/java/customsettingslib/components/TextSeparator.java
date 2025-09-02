@@ -1,4 +1,4 @@
-package customsettingsui.components;
+package customsettingslib.components;
 
 import necesse.gfx.forms.components.FormContentBox;
 import necesse.gfx.forms.components.localComponents.FormLocalLabel;

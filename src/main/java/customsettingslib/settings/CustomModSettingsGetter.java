@@ -1,6 +1,6 @@
-package customsettingsui.settings;
+package customsettingslib.settings;
 
-import customsettingsui.components.settings.SelectionSetting;
+import customsettingslib.components.settings.SelectionSetting;
 
 import java.awt.*;
 
@@ -28,7 +28,7 @@ public class CustomModSettingsGetter {
     }
 
     public float getFloat(String settingID, int decimals) {
-        return (float) get(settingID) / decimals;
+        return (float) getInt(settingID) / (10F * decimals);
     }
 
     public Color getColor(String settingID) {

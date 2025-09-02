@@ -1,6 +1,6 @@
-package customsettingsui.components.settings;
+package customsettingslib.components.settings;
 
-import customsettingsui.components.CustomModSetting;
+import customsettingslib.components.CustomModSetting;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
 import necesse.gfx.forms.components.*;
@@ -57,7 +57,8 @@ public class IntSetting extends CustomModSetting<Integer> {
                         if (!onlyBar && preview.get() != null) preview.get().setText(newValue.get().toString());
                     });
 
-            if(!onlyBar) preview.set(form.addComponent(new FormLabel(newValue.get().toString(), new FontOptions(16), 0, form.getWidth() - 50, y + (slider.getTotalHeight() - 16) / 2, 52)));
+            if (!onlyBar)
+                preview.set(form.addComponent(new FormLabel(newValue.get().toString(), new FontOptions(16), 0, form.getWidth() - 50, y + (slider.getTotalHeight() - 16) / 2, 52)));
 
             return slider.getTotalHeight();
         } else if (displayMode == DisplayMode.INPUT) {
@@ -68,11 +69,11 @@ public class IntSetting extends CustomModSetting<Integer> {
                 String text = formTextInput.getText();
                 try {
                     int number = Integer.parseInt(text);
-                    if(number < min) {
+                    if (number < min) {
                         number = min;
                         formTextInput.setText(String.valueOf(number));
                     }
-                    if(number > max) {
+                    if (number > max) {
                         number = max;
                         formTextInput.setText(String.valueOf(number));
                     }
@@ -106,11 +107,11 @@ public class IntSetting extends CustomModSetting<Integer> {
                 String text = formTextInput.getText();
                 try {
                     int number = Integer.parseInt(text);
-                    if(number < min) {
+                    if (number < min) {
                         number = min;
                         formTextInput.setText(String.valueOf(number));
                     }
-                    if(number > max) {
+                    if (number > max) {
                         number = max;
                         formTextInput.setText(String.valueOf(number));
                     }

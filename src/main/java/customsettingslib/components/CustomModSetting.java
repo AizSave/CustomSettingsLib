@@ -1,4 +1,4 @@
-package customsettingsui.components;
+package customsettingslib.components;
 
 import necesse.engine.modLoader.LoadedMod;
 import necesse.engine.save.LoadData;

@@ -1,7 +1,6 @@
-package customsettingsui.components.settings;
+package customsettingslib.components.settings;
 
-import customsettingsui.SettingsModEntry;
-import customsettingsui.components.CustomModSetting;
+import customsettingslib.components.CustomModSetting;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
 import necesse.gfx.forms.components.FormCheckBox;

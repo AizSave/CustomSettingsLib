@@ -21,6 +21,7 @@ You're free to use this library for:
 4. [Customizing Your Mod Settings](#customizing-your-mod-settings)
    - [Custom Components](#custom-components)
    - [Text Separators](#text-separators)
+   - [Paragraphs](#paragraphs)
    - [Custom Settings](#custom-settings)
    - [Boolean Settings](#boolean-settings)
    - [String Settings](#string-settings)
@@ -49,7 +50,7 @@ Since this library isn't published on Maven Central, you'll need to add it manua
 5. Add the .jar as a library in your IDE.
 6. In `build.gradle`, include the dependency:
    ```groovy
-   project.ext.modDependencies = ["aizsave.customsettingsui"]
+   project.ext.modDependencies = ["aizsave.customsettingslib"]
    ```
 7. When publishing your mod, don't forget to also add the dependency to Steam.
 
@@ -60,7 +61,7 @@ Since this library isn't published on Maven Central, you'll need to add it manua
 # Implementation
 
 1. In your mod entry class, add `initSettings()` returning a new instance of `ModSettings`:
-   
+
    Example:
    ```java
     @ModEntry
@@ -73,7 +74,7 @@ Since this library isn't published on Maven Central, you'll need to add it manua
    ```
 
 2. Add a static `CustomModSettingsGetter` variable to the entry object and assign it via `getGetter()`:
-   
+
    Example:
    ```java
     @ModEntry
@@ -137,6 +138,79 @@ Since this library isn't published on Maven Central, you'll need to add it manua
         }
     }
    ```
+   
+4. [OPTIONAL RECOMMENDATION] If you want to display an error when this mod is not installed then you can do this process in other method of an aside class of the mod entry and adds a try catch block
+
+   Example:  
+
+   Mod Entry:
+   ```java
+    @ModEntry
+    public class SettingsModEntry { 
+        public static CustomModSettingsGetter settingsGetter;
+
+        public void init() {
+            // ...
+        }
+    
+        public void postInit() {
+            // ...
+        }
+    
+        public void initResources() {
+            // ...
+        }
+        
+        public ModSettings initSettings() {
+            ModSettings modSettings;
+            try {
+                modSettings = CustomSettings.init();
+            } catch (NoClassDefFoundError err) {
+                throw new RuntimeException(
+                    "\n\nMissing dependency: \"Custom Settings Lib\"." +
+                            "\nThe mod \"" + LoadedMod.getRunningMod().getModNameString() + "\" requires it to run." +
+                            "\n\nPlease subscribe and enable \"Custom Settings Lib\" before launching this mod.\n\n"
+                );
+            }
+            return modSettings;
+        }
+    }
+   ```
+   Make sure not to use any Custom Settings Lib import in the mod entry or in the mod preInit.  
+
+   Aside Class:
+   ```java
+    public class CustomSettings {
+        public static CustomModSettingsGetter settingsGetter;
+
+        public static ModSettings init() {
+            CustomModSettings customModSettings = new CustomModSettings()
+                .addTextSeparator("section1")
+                .addBooleanSetting("boolean1", false)
+                .addBooleanSetting("boolean2", false)
+                .addBooleanSetting("boolean3", false)
+                .addBooleanSetting("boolean4", false)
+                .addStringSetting("string", "", 0)
+                
+                .addTextSeparator("section2")
+                .addSelectionSetting("selection", 0,
+                        new SelectionSetting.Option("option1"),
+                        new SelectionSetting.Option("option2"),
+                        new SelectionSetting.Option("option3")
+                )
+                .addIntSetting("int_bar1", 0, 0, 100, IntSetting.DisplayMode.BAR)
+                .addIntSetting("int_bar2", 0, 0, 200, IntSetting.DisplayMode.BAR)
+                .addIntSetting("int_input", 0, -10000, 10000, IntSetting.DisplayMode.INPUT)
+                .addIntSetting("int_input-bar", 0, -100, 100, IntSetting.DisplayMode.INPUT_BAR)
+                
+                .addTextSeparator("section3")
+                .addBooleanSetting("boolean5", false)
+                .addColorSetting("color", new Color(255, 255, 255));
+            settingsGetter = customModSettings.getGetter();
+            return customModSettings;
+        }
+    }
+   ```
 
 [Return to Index](#index)
 
@@ -185,11 +259,17 @@ Example:
 ```
 [settingsui]
 customhealthbarsection=Custom Health Bar
+customhealthbartext=The custom health bar...
+
 customhealthbar=Enabled
 healthbartitle=Title
 healthbarsize=Size
 healthbardisplay=Tyle
 healthbarcolor=Background Color
+
+baroption=Bar
+compactbaroption=Compact Bar
+circularoption=Circular
 ```
 
 ![Result Example](https://lh3.googleusercontent.com/fife/ALs6j_E8xF-juZKNBpmWXk0dqbZ4iS0EsCIH4oADvB-yE0qAv5baKEvmfCSg-IllgvHcQqjDJJ5itT8kSvm70CDPuUN6jpLAzUwSPEJLdG19Px90Yat-vBkv4OIa9Fs9vSYDf8im22mzTHb7VOl1ic_PhmVIDt-cgh1vrTsI323kVVDdomi2Wy-9NQpNXInGKttEi6i5_hgXwAPZ1tLegB4WyXTM2guXZLCUZwGblWA55IJZ_ForTFBwuyzIsLkzd1_94DAfNVwcLyS1f7tfAXh5FvooR_c6DGW4DJw9a7v3mN-HyLy5_atUpgM0zLVgCaVYBHUnkRFzFrJ4Wc_bS82Vvtp6dZSnIPNm6sVCYYq8TFDtf9om0GHwVGFbTafTx55L6TI86kf6twnGIQiCjs6TmJPy5HvPdUD4smdsEwAf5kFBz_8Xa3fcMd1RRwVP0pWdWTeBTQYQ9EWoKmEvyWTkwWbmdBk0_ZdXSsiWsgUw_yzefViQFf1ZKbudUQNuhhQN5ZsH3CelG6F2oMgx7UCDohoTcSbHDpQ8TfJaoB_s7Zv4Zb27-mhX0WkQoTeORQ5V0AvZ-PdqjoM3fl2TmhUxl4ptwf5Fyd-WxVOXLyXTOZ06p3gCxb_pVsHseZxN9FTb-tuUa56RUzC0dtuAF0Lb0bfpxJK9nAdsu8Kx73CYDlr2snAgvNFhK-4WhKc0te9bLFT1WXCX4UE7iu-O3bVKkfBjMEDYr8kvjhFWBh_DgTJCQlNp1B5wDBwEa-mbVjNskY5nmwlN_8R2ICKqqN0EXUSI7EiG_xyLuqTTwDfYkPU1aCsnR5hCUgnIWjcI9afSZq-F28ZWPOlAfMyPDJJ8AtX2HezUHA0uE5gOcRGdSXawsbv9_8ydvLOzGWEaLmHB_0yfJAdXjKwJcfT_9Gd2hep53wl-i360sLOXhXutrU3WSw_4p4udXEOj4egVdOKHWpUmFwtMDINSeWHOvNV_gNqiTQ=w1842-h959)
@@ -230,6 +310,37 @@ Example:
 ```
 
 [Return to Index](#index)
+
+---
+
+### Paragraphs
+
+```java
+    public CustomModSettings addParagraph(String key, int fontSize, int align, int spaceTop, int spaceBottom) {
+   addCustomComponents(new Paragraph(key, fontSize, align, spaceTop, spaceBottom));
+   return this;
+}
+
+public CustomModSettings addParagraph(String key, int fontSize, int align) {
+   addCustomComponents(new Paragraph(key, fontSize, align, 4, 6));
+   return this;
+}
+
+public CustomModSettings addParagraph(String key) {
+   addCustomComponents(new Paragraph(key, 12, -1, 4, 6));
+   return this;
+}
+```
+
+Adds a visual **text** in the settings UI. Useful for explaining settings or make your own custom separators.
+
+Example:
+```
+.addParagraph("customhealthbartext")
+```
+
+[Return to Index](#index)
+
 
 ---
 
@@ -328,9 +439,9 @@ Adds a **dropdown** with predefined options
 Example:
 ```
 .addSelectionSetting("healthbardisplay", 0,
-    new SelectionSetting.Option("Bar", CustomHealthBar.Display.BAR),
-    new SelectionSetting.Option("Compact Bar", ModDifficulty.COMPACT),
-    new SelectionSetting.Option("Circular", CustomHealthBar.Display.CIRCULAR)
+    new SelectionSetting.Option("baroption", CustomHealthBar.Display.BAR),
+    new SelectionSetting.Option("compactbaroption", ModDifficulty.COMPACT),
+    new SelectionSetting.Option("circularoption", CustomHealthBar.Display.CIRCULAR)
 )
 ```
 

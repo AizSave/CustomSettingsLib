@@ -1,25 +1,25 @@
-package customsettingsui.settings;
+package customsettingslib.settings;
 
-import customsettingsui.components.CustomModSetting;
-import customsettingsui.components.SettingsComponents;
-import customsettingsui.components.TextSeparator;
-import customsettingsui.components.settings.*;
+import customsettingslib.components.CustomModSetting;
+import customsettingslib.components.Paragraph;
+import customsettingslib.components.SettingsComponents;
+import customsettingslib.components.TextSeparator;
+import customsettingslib.components.settings.*;
 import necesse.engine.modLoader.LoadedMod;
-import necesse.engine.modLoader.ModLoader;
 import necesse.engine.modLoader.ModSettings;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class CustomModSettings extends ModSettings {
     public static List<CustomModSettings> customModSettingsList = new ArrayList<>();
 
     public static Object getModSetting(String modID, String settingID) {
         for (CustomModSettings customModSettings : customModSettingsList) {
-            if(Objects.equals(customModSettings.mod.id, modID)) {
+            if (Objects.equals(customModSettings.mod.id, modID)) {
                 return customModSettings.settingsMap.get(settingID).getValue();
             }
         }
@@ -64,6 +64,21 @@ public class CustomModSettings extends ModSettings {
 
     public CustomModSettings addTextSeparator(String key) {
         addCustomComponents(new TextSeparator(key));
+        return this;
+    }
+
+    public CustomModSettings addParagraph(String key, int fontSize, int align, int spaceTop, int spaceBottom) {
+        addCustomComponents(new Paragraph(key, fontSize, align, spaceTop, spaceBottom));
+        return this;
+    }
+
+    public CustomModSettings addParagraph(String key, int fontSize, int align) {
+        addCustomComponents(new Paragraph(key, fontSize, align, 4, 6));
+        return this;
+    }
+
+    public CustomModSettings addParagraph(String key) {
+        addCustomComponents(new Paragraph(key, 12, -1, 4, 6));
         return this;
     }
 
