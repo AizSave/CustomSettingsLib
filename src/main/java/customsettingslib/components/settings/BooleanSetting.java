@@ -4,7 +4,6 @@ import customsettingslib.components.CustomModSetting;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
 import necesse.gfx.forms.components.FormCheckBox;
-import necesse.gfx.forms.components.FormContentBox;
 import necesse.gfx.forms.components.localComponents.FormLocalCheckBox;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -27,9 +26,12 @@ public class BooleanSetting extends CustomModSetting<Boolean> {
     private final AtomicReference<Boolean> newValue = new AtomicReference<>();
 
     @Override
-    public int addComponents(FormContentBox form, int y, int n) {
+    public int addComponents(int y, int n) {
         newValue.set(value);
-        FormCheckBox component = form.addComponent(new FormLocalCheckBox("settingsui", id, 4, y, form.getWidth() - 20), 8)
+
+        int width = getWidth();
+
+        FormCheckBox component = settingsForm.addComponent(new FormLocalCheckBox("settingsui", id, LEFT_MARGIN, y, width), 8)
                 .onClicked((e) -> {
                     newValue.set(!newValue.get());
                 });

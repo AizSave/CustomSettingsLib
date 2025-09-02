@@ -6,7 +6,6 @@ import necesse.engine.localization.message.LocalMessage;
 import necesse.engine.localization.message.StaticMessage;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
-import necesse.gfx.forms.components.FormContentBox;
 import necesse.gfx.forms.components.FormDropdownSelectionButton;
 import necesse.gfx.forms.components.FormInputSize;
 import necesse.gfx.ui.ButtonColor;
@@ -43,10 +42,12 @@ public class SelectionSetting extends CustomModSetting<Integer> {
     private final AtomicReference<Integer> newValue = new AtomicReference<>();
 
     @Override
-    public int addComponents(FormContentBox form, int y, int n) {
+    public int addComponents(int y, int n) {
         newValue.set(value);
 
-        FormDropdownSelectionButton<Integer> selectionForm = form.addComponent(new FormDropdownSelectionButton<>(4, y, FormInputSize.SIZE_20, ButtonColor.BASE, form.getWidth() - 30));
+        int width = getWidth();
+
+        FormDropdownSelectionButton<Integer> selectionForm = settingsForm.addComponent(new FormDropdownSelectionButton<>(LEFT_MARGIN, y, FormInputSize.SIZE_20, ButtonColor.BASE, width));
         for (int i = 0; i < options.length; i++) {
             selectionForm.options.add(i, options[i].getDisplayName());
         }

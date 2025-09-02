@@ -94,8 +94,8 @@ public class CustomModSettings extends ModSettings {
         return this;
     }
 
-    public CustomModSettings addStringSetting(String id, String defaultValue, int maxLength) {
-        addCustomSetting(new StringSetting(id, defaultValue, maxLength));
+    public CustomModSettings addStringSetting(String id, String defaultValue, int maxLength, boolean large) {
+        addCustomSetting(new StringSetting(id, defaultValue, maxLength, large));
         return this;
     }
 

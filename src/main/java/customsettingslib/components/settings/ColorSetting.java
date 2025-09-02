@@ -8,7 +8,6 @@ import necesse.engine.util.GameMath;
 import necesse.entity.mobs.PlayerMob;
 import necesse.gfx.Renderer;
 import necesse.gfx.forms.Form;
-import necesse.gfx.forms.components.FormContentBox;
 import necesse.gfx.forms.components.FormInputSize;
 import necesse.gfx.forms.components.localComponents.FormLocalLabel;
 import necesse.gfx.forms.components.localComponents.FormLocalSlider;
@@ -44,34 +43,36 @@ public class ColorSetting extends CustomModSetting<Integer> {
     private final AtomicReference<Color> color = new AtomicReference<>();
 
     @Override
-    public int addComponents(FormContentBox form, int y, int n) {
+    public int addComponents(int y, int n) {
         color.set(getColor());
 
-        form.addComponent(new FormLocalLabel("settingsui", id, new FontOptions(12), 0, (form.getWidth() - 100) / 2, y + 4, form.getWidth() - 16));
+        int width = getWidth();
 
-        FormLocalSlider red = form.addComponent(new FormLocalSlider("ui", "colorred", 8, y + 20, color.get().getRed(), 0, 255, form.getWidth() - 100, new FontOptions(12)));
+        settingsForm.addComponent(new FormLocalLabel("settingsui", id, new FontOptions(12), 0, (width - 80) / 2, y + 4, width));
+
+        FormLocalSlider red = settingsForm.addComponent(new FormLocalSlider("ui", "colorred", LEFT_MARGIN, y + 20, color.get().getRed(), 0, 255, width - 80, new FontOptions(12)));
         red.onChanged((e) -> {
             Color tempColor = color.get();
             color.set(new Color(e.from.getValue(), tempColor.getGreen(), tempColor.getBlue(), tempColor.getAlpha()));
         });
-        FormLocalSlider green = form.addComponent(new FormLocalSlider("ui", "colorgreen", 8, red.getY() + red.getTotalHeight() + 4, color.get().getGreen(), 0, 255, form.getWidth() - 100, new FontOptions(12)));
+        FormLocalSlider green = settingsForm.addComponent(new FormLocalSlider("ui", "colorgreen", LEFT_MARGIN, red.getY() + red.getTotalHeight() + 4, color.get().getGreen(), 0, 255, width - 80, new FontOptions(12)));
         green.onChanged((e) -> {
             Color tempColor = color.get();
             color.set(new Color(tempColor.getRed(), e.from.getValue(), tempColor.getBlue(), tempColor.getAlpha()));
         });
-        FormLocalSlider blue = form.addComponent(new FormLocalSlider("ui", "colorblue", 8, green.getY() + green.getTotalHeight() + 4, color.get().getBlue(), 0, 255, form.getWidth() - 100, new FontOptions(12)));
+        FormLocalSlider blue = settingsForm.addComponent(new FormLocalSlider("ui", "colorblue", LEFT_MARGIN, green.getY() + green.getTotalHeight() + 4, color.get().getBlue(), 0, 255, width - 80, new FontOptions(12)));
         blue.onChanged((e) -> {
             Color tempColor = color.get();
             color.set(new Color(tempColor.getRed(), tempColor.getGreen(), e.from.getValue(), tempColor.getAlpha()));
         });
-        FormLocalSlider alpha = form.addComponent(new FormLocalSlider("ui", "alpha", 8, blue.getY() + blue.getTotalHeight() + 4, color.get().getAlpha(), 0, 255, form.getWidth() - 100, new FontOptions(12)));
+        FormLocalSlider alpha = settingsForm.addComponent(new FormLocalSlider("ui", "alpha", LEFT_MARGIN, blue.getY() + blue.getTotalHeight() + 4, color.get().getAlpha(), 0, 255, width - 80, new FontOptions(12)));
         alpha.onChanged((e) -> {
             Color tempColor = color.get();
             color.set(new Color(tempColor.getRed(), tempColor.getGreen(), tempColor.getBlue(), e.from.getValue()));
         });
 
         int nextY = alpha.getY() + alpha.getTotalHeight() + 4;
-        form.addComponent(new FormLocalTextButton("ui", "selectcolor", 8, nextY, form.getWidth() - 32, FormInputSize.SIZE_20, ButtonColor.BASE))
+        settingsForm.addComponent(new FormLocalTextButton("ui", "selectcolor", LEFT_MARGIN, nextY, width, FormInputSize.SIZE_20, ButtonColor.BASE))
                 .onClicked((e) -> {
                     final Color startColor = color.get();
                     e.from.getManager().openFloatMenu(new ColorSelectorFloatMenu(e.from, startColor) {
@@ -91,7 +92,7 @@ public class ColorSetting extends CustomModSetting<Integer> {
                     });
                 });
 
-        form.addComponent(new ColorPreview(form.getWidth() - 82, y + (nextY - y) / 2 - 32));
+        settingsForm.addComponent(new ColorPreview(width - 64, y + (nextY - y) / 2 - 32));
 
         return (nextY - y) + 20 + 4;
     }

@@ -116,7 +116,7 @@ Since this library isn't published on Maven Central, you'll need to add it manua
                 .addBooleanSetting("boolean2", false)
                 .addBooleanSetting("boolean3", false)
                 .addBooleanSetting("boolean4", false)
-                .addStringSetting("string", "", 0)
+                .addStringSetting("string", "", 0, false)
                 
                 .addTextSeparator("section2")
                 .addSelectionSetting("selection", 0,
@@ -190,7 +190,7 @@ Since this library isn't published on Maven Central, you'll need to add it manua
                 .addBooleanSetting("boolean2", false)
                 .addBooleanSetting("boolean3", false)
                 .addBooleanSetting("boolean4", false)
-                .addStringSetting("string", "", 0)
+                .addStringSetting("string", "", 0, false)
                 
                 .addTextSeparator("section2")
                 .addSelectionSetting("selection", 0,
@@ -223,23 +223,23 @@ The `public static CustomModSettingsGetter settingsGetter` gives access to your 
 Incorrect usage will throw errors, so ensure you use the correct getter method for the setting type
 
 ```java
-public void method() {
-   // "settingID" must be a valid ID of a custom setting
-   SettingsModEntry.settingsGetter.get(settingID);          // Returns Object
-   SettingsModEntry.settingsGetter.getBoolean(settingID);   // Boolean only
-   SettingsModEntry.settingsGetter.getString(settingID);    // String only
-   SettingsModEntry.settingsGetter.getInt(settingID);       // Int only
-   SettingsModEntry.settingsGetter.getFloat(settingID, 2);  // Float (from int) only
-   SettingsModEntry.settingsGetter.getSelection(settingID); // Selected option (Object)
-   SettingsModEntry.settingsGetter.getColor(settingID);     // Color only
-}
+    public void method() {
+        // "settingID" must be a valid ID of a custom setting
+        SettingsModEntry.settingsGetter.get(settingID);          // Returns Object
+        SettingsModEntry.settingsGetter.getBoolean(settingID);   // Boolean only
+        SettingsModEntry.settingsGetter.getString(settingID);    // String only
+        SettingsModEntry.settingsGetter.getInt(settingID);       // Int only
+        SettingsModEntry.settingsGetter.getFloat(settingID, 2);  // Float (from int) only
+        SettingsModEntry.settingsGetter.getSelection(settingID); // Selected option (Object)
+        SettingsModEntry.settingsGetter.getColor(settingID);     // Color only
+    }
 ```
 
 To access **other mods' custom settings**, use:
 ```java
-public void method() {
-   SettingsModEntry.getModSetting(modID, settingID);
-}
+    public void method() {
+        SettingsModEntry.getModSetting(modID, settingID);
+    }
 ```
 
 [Return to Index](#index)
@@ -281,10 +281,10 @@ circularoption=Circular
 ### Custom Components
 
 ```java
-public CustomModSettings addCustomComponents(SettingsComponents settingsComponents) {
-    settingsDisplay.add(settingsComponents);
-    return this;
-}
+    public CustomModSettings addCustomComponents(SettingsComponents settingsComponents) {
+        settingsDisplay.add(settingsComponents);
+        return this;
+    }
 ```
 
 Use this when you create your own custom components.
@@ -296,10 +296,10 @@ Use this when you create your own custom components.
 ### Text Separators
 
 ```java
-public CustomModSettings addTextSeparator(String key) {
-   addCustomComponents(new TextSeparator(key));
-   return this;
-}
+    public CustomModSettings addTextSeparator(String key) {
+        addCustomComponents(new TextSeparator(key));
+        return this;
+    }
 ```
 
 Adds a visual **section divider** in the settings UI. Useful for grouping related settings into categories.
@@ -317,19 +317,19 @@ Example:
 
 ```java
     public CustomModSettings addParagraph(String key, int fontSize, int align, int spaceTop, int spaceBottom) {
-   addCustomComponents(new Paragraph(key, fontSize, align, spaceTop, spaceBottom));
-   return this;
-}
+        addCustomComponents(new Paragraph(key, fontSize, align, spaceTop, spaceBottom));
+        return this;
+    }
 
-public CustomModSettings addParagraph(String key, int fontSize, int align) {
-   addCustomComponents(new Paragraph(key, fontSize, align, 4, 6));
-   return this;
-}
+    public CustomModSettings addParagraph(String key, int fontSize, int align) {
+        addCustomComponents(new Paragraph(key, fontSize, align, 4, 6));
+        return this;
+    }
 
-public CustomModSettings addParagraph(String key) {
-   addCustomComponents(new Paragraph(key, 12, -1, 4, 6));
-   return this;
-}
+    public CustomModSettings addParagraph(String key) {
+        addCustomComponents(new Paragraph(key, 12, -1, 4, 6));
+        return this;
+    }
 ```
 
 Adds a visual **text** in the settings UI. Useful for explaining settings or make your own custom separators.
@@ -347,12 +347,12 @@ Example:
 ### Custom Settings
 
 ```java
-public CustomModSettings addCustomSetting(CustomModSetting<?> customModSetting) {
-   settingsDisplay.add(customModSetting);
-   settingsList.add(customModSetting);
-   settingsMap.put(customModSetting.id, customModSetting);
-   return this;
-}
+    public CustomModSettings addCustomSetting(CustomModSetting<?> customModSetting) {
+        settingsDisplay.add(customModSetting);
+        settingsList.add(customModSetting);
+        settingsMap.put(customModSetting.id, customModSetting);
+        return this;
+    }
 ```
 
 Use this when you create your own custom settings components.
@@ -364,10 +364,10 @@ Use this when you create your own custom settings components.
 ### Boolean Settings
 
 ```java
-public CustomModSettings addBooleanSetting(String id, boolean defaultValue) {
-   addCustomSetting(new BooleanSetting(id, defaultValue));
-   return this;
-}
+    public CustomModSettings addBooleanSetting(String id, boolean defaultValue) {
+        addCustomSetting(new BooleanSetting(id, defaultValue));
+        return this;
+    }
 ```
 
 Creates a simple **toggle (checkbox)**
@@ -383,17 +383,17 @@ Creates a simple **toggle (checkbox)**
 ### String Settings
 
 ```java
-public CustomModSettings addStringSetting(String id, String defaultValue, int maxLength) {
-   addCustomSetting(new StringSetting(id, defaultValue, maxLength));
-   return this;
-}
+    public CustomModSettings addStringSetting(String id, String defaultValue, int maxLength, boolean large) {
+        addCustomSetting(new StringSetting(id, defaultValue, maxLength, large));
+        return this;
+    }
 ```
 
 Creates a **text input field** with a maximum length
 
 Example:
 ```
-.addStringSetting("healthbartitle", "Health Bar", 20)
+.addStringSetting("healthbartitle", "Health Bar", 20, false)
 ```
 
 [Return to Index](#index)
@@ -403,10 +403,10 @@ Example:
 ### Integer Settings
 
 ```java
-public CustomModSettings addIntSetting(String id, int defaultValue, int min, int max, IntSetting.DisplayMode displayMode) {
-   addCustomSetting(new IntSetting(id, defaultValue, min, max, displayMode));
-   return this;
-}
+    public CustomModSettings addIntSetting(String id, int defaultValue, int min, int max, IntSetting.DisplayMode displayMode) {
+        addCustomSetting(new IntSetting(id, defaultValue, min, max, displayMode));
+        return this;
+    }
 ```
 
 Adds an **integer-based setting** with a configurable range and display style
@@ -428,10 +428,10 @@ Example:
 ### Selection Settings
 
 ```java
-public CustomModSettings addSelectionSetting(String id, int defaultValue, SelectionSetting.Option... options) {
-   addCustomSetting(new SelectionSetting(id, defaultValue, options));
-   return this;
-}
+    public CustomModSettings addSelectionSetting(String id, int defaultValue, SelectionSetting.Option... options) {
+        addCustomSetting(new SelectionSetting(id, defaultValue, options));
+        return this;
+    }
 ```
 
 Adds a **dropdown** with predefined options
@@ -457,10 +457,10 @@ Each `Option` has three values:
 ### Color Settings
 
 ```java
-public CustomModSettings addColorSetting(String id, Color defaultValue) {
-   addCustomSetting(new ColorSetting(id, defaultValue));
-   return this;
-}
+    public CustomModSettings addColorSetting(String id, Color defaultValue) {
+        addCustomSetting(new ColorSetting(id, defaultValue));
+        return this;
+    }
 ```
 
 Adds a **color picker** to let the player choose an RGBA color

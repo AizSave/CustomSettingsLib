@@ -3,7 +3,6 @@ package customsettingslib.components.settings;
 import customsettingslib.components.CustomModSetting;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
-import necesse.gfx.forms.components.FormContentBox;
 import necesse.gfx.forms.components.FormInputSize;
 import necesse.gfx.forms.components.FormTextInput;
 import necesse.gfx.forms.components.localComponents.FormLocalLabel;
@@ -13,10 +12,12 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class StringSetting extends CustomModSetting<String> {
     protected int maxLength;
+    boolean large;
 
-    public StringSetting(String id, String defaultValue, int maxLength) {
+    public StringSetting(String id, String defaultValue, int maxLength, boolean large) {
         super(id, defaultValue);
         this.maxLength = maxLength;
+        this.large = false;
     }
 
     @Override
@@ -37,11 +38,13 @@ public class StringSetting extends CustomModSetting<String> {
     private final AtomicReference<String> newValue = new AtomicReference<>();
 
     @Override
-    public int addComponents(FormContentBox form, int y, int n) {
+    public int addComponents(int y, int n) {
         newValue.set(value);
 
-        form.addComponent(new FormLocalLabel("settingsui", id, new FontOptions(16), -1, 208, y + 2));
-        FormTextInput input = form.addComponent(new FormTextInput(4, y, FormInputSize.SIZE_20, 200, maxLength));
+        int inputWidth = large ? 192 : 128;
+
+        settingsForm.addComponent(new FormLocalLabel("settingsui", id, new FontOptions(16), -1, LEFT_MARGIN + inputWidth + 16, y + 2));
+        FormTextInput input = settingsForm.addComponent(new FormTextInput(LEFT_MARGIN, y, FormInputSize.SIZE_20, inputWidth, maxLength));
         input.onChange(e -> {
             FormTextInput formTextInput = (FormTextInput) e.from;
             String text = formTextInput.getText();

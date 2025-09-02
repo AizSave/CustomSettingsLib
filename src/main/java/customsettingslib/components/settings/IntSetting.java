@@ -44,26 +44,28 @@ public class IntSetting extends CustomModSetting<Integer> {
     private final AtomicReference<Integer> newValue = new AtomicReference<>();
 
     @Override
-    public int addComponents(FormContentBox form, int y, int n) {
+    public int addComponents(int y, int n) {
         newValue.set(value);
+
+        int width = getWidth();
 
         if (displayMode == DisplayMode.BAR) {
             boolean onlyBar = min == 0 && max == 100;
             final AtomicReference<FormLabel> preview = new AtomicReference<>();
 
-            FormSlider slider = form.addComponent(new FormLocalSlider("settingsui", id, 10, y, newValue.get(), min, max, form.getWidth() - (onlyBar ? 0 : 60) - 10 - 20), 15)
+            FormSlider slider = settingsForm.addComponent(new FormLocalSlider("settingsui", id, LEFT_MARGIN, y, newValue.get(), min, max, width - (onlyBar ? 0 : 80)), 15)
                     .onChanged((e) -> {
                         newValue.set(e.from.getValue());
                         if (!onlyBar && preview.get() != null) preview.get().setText(newValue.get().toString());
                     });
 
             if (!onlyBar)
-                preview.set(form.addComponent(new FormLabel(newValue.get().toString(), new FontOptions(16), 0, form.getWidth() - 50, y + (slider.getTotalHeight() - 16) / 2, 52)));
+                preview.set(settingsForm.addComponent(new FormLabel(newValue.get().toString(), new FontOptions(16), 0, width - 32, y + (slider.getTotalHeight() - 16) / 2, 64)));
 
             return slider.getTotalHeight();
         } else if (displayMode == DisplayMode.INPUT) {
-            form.addComponent(new FormLocalLabel("settingsui", id, new FontOptions(16), -1, 108, y + 2));
-            FormTextInput input = form.addComponent(new FormTextInput(4, y, FormInputSize.SIZE_20, 100, Math.max(String.valueOf(max).length(), String.valueOf(min).length())));
+            settingsForm.addComponent(new FormLocalLabel("settingsui", id, new FontOptions(16), -1, LEFT_MARGIN + 128 + 16, y + 2));
+            FormTextInput input = settingsForm.addComponent(new FormTextInput(LEFT_MARGIN, y, FormInputSize.SIZE_20, 128, Math.max(String.valueOf(max).length(), String.valueOf(min).length())));
             input.onChange(e -> {
                 FormTextInput formTextInput = (FormTextInput) e.from;
                 String text = formTextInput.getText();
@@ -90,14 +92,14 @@ public class IntSetting extends CustomModSetting<Integer> {
         } else if (displayMode == DisplayMode.INPUT_BAR) {
             final AtomicReference<FormTextInput> input = new AtomicReference<>();
 
-            FormSlider slider = form.addComponent(new FormLocalSlider("settingsui", id, 10, y, newValue.get(), min, max, form.getWidth() - 80 - 10), 15)
+            FormSlider slider = settingsForm.addComponent(new FormLocalSlider("settingsui", id, LEFT_MARGIN, y, newValue.get(), min, max, width - 80), 15)
                     .onChanged((e) -> {
                         newValue.set(e.from.getValue());
                         if (input.get() != null) input.get().setText(newValue.get().toString());
                     });
 
             input.set(
-                    form.addComponent(new FormTextInput(form.getWidth() - 76, y + (slider.getTotalHeight() - 20) / 2, FormInputSize.SIZE_20, 52, Math.max(String.valueOf(max).length(), String.valueOf(min).length())))
+                    settingsForm.addComponent(new FormTextInput(width - 64, y + (slider.getTotalHeight() - 20) / 2, FormInputSize.SIZE_20, 64, Math.max(String.valueOf(max).length(), String.valueOf(min).length())))
             );
 
             input.get().setText(newValue.get().toString());

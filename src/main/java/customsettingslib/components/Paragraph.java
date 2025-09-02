@@ -1,6 +1,5 @@
 package customsettingslib.components;
 
-import necesse.gfx.forms.components.FormContentBox;
 import necesse.gfx.forms.components.localComponents.FormLocalLabel;
 import necesse.gfx.gameFont.FontOptions;
 
@@ -20,17 +19,19 @@ public class Paragraph extends SettingsComponents {
     }
 
     @Override
-    public int addComponents(FormContentBox form, int y, int n) {
+    public int addComponents(int y, int n) {
+        int width = getWidth();
+
         int addedTop = n == 0 ? 0 : spaceTop;
         int startX;
         if (align == 0) {
-            startX = form.getWidth() - 4;
+            startX = width - getRightMargin();
         } else if (align == 1) {
-            startX = form.getWidth() / 2;
+            startX = width / 2;
         } else {
-            startX = 4;
+            startX = LEFT_MARGIN;
         }
-        FormLocalLabel label = form.addComponent(new FormLocalLabel("settingsui", key, new FontOptions(fontSize), align, startX, y + addedTop, form.getWidth() - 8));
+        FormLocalLabel label = settingsForm.addComponent(new FormLocalLabel("settingsui", key, new FontOptions(fontSize), align, startX, y + addedTop, width));
         return label.getHeight() + addedTop + spaceBottom;
     }
 }
