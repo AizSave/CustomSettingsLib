@@ -152,7 +152,7 @@ Since this library isn't published on Maven Central, you'll need to add it manua
         public static CustomModSettingsGetter settingsGetter;
         
         public ModSettings initSettings() {
-            ModSettings modSettings;
+            CustomModSettings modSettings;
             try {
                 modSettings = new CustomModSettings();
 
@@ -178,7 +178,7 @@ Since this library isn't published on Maven Central, you'll need to add it manua
         public static CustomModSettingsGetter settingsGetter;
         
         public ModSettings initSettings() {
-            ModSettings modSettings = new CustomModSettings(
+            CustomModSettings modSettings = new CustomModSettings(
                 () -> System.out.println("Mod settings saved")
             );
             

@@ -57,6 +57,12 @@ public class CustomModSettingsForm extends Form {
             for (CustomModSetting<?> value : customModSettings.settingsList) {
                 value.restoreToDefault();
             }
+            for (Runnable onSavedListener : customModSettings.onSavedListeners) {
+                onSavedListener.run();
+            }
+            for (CustomModSetting<?> value : customModSettings.settingsList) {
+                value.onSave();
+            }
             Settings.saveClientSettings();
             resetComponents(customModSettings);
         });
