@@ -17,7 +17,7 @@ public class StringSetting extends CustomModSetting<String> {
     public StringSetting(String id, String defaultValue, int maxLength, boolean large) {
         super(id, defaultValue);
         this.maxLength = maxLength;
-        this.large = false;
+        this.large = large;
     }
 
     @Override
@@ -27,12 +27,12 @@ public class StringSetting extends CustomModSetting<String> {
 
     @Override
     public void addSaveData(SaveData saveData) {
-        saveData.addSafeString(getSaveKey(), value);
+        saveData.addSafeString(id, value);
     }
 
     @Override
     public void applyLoadData(LoadData loadData) {
-        value = loadData.getSafeString(getSaveKey(), defaultValue);
+        value = loadData.getSafeString(id, loadData.getSafeString(getOldSaveKey(), defaultValue));
     }
 
     private final AtomicReference<String> newValue = new AtomicReference<>();
@@ -51,6 +51,8 @@ public class StringSetting extends CustomModSetting<String> {
             newValue.set(text);
         });
         input.setText(newValue.get());
+
+        input.setActive(isEnabled());
 
         return 20;
     }

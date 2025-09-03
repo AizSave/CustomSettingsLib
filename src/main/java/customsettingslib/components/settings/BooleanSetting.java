@@ -15,12 +15,12 @@ public class BooleanSetting extends CustomModSetting<Boolean> {
 
     @Override
     public void addSaveData(SaveData saveData) {
-        saveData.addBoolean(getSaveKey(), value);
+        saveData.addBoolean(id, value);
     }
 
     @Override
     public void applyLoadData(LoadData loadData) {
-        value = loadData.getBoolean(getSaveKey(), defaultValue);
+        value = loadData.getBoolean(id, loadData.getBoolean(getOldSaveKey(), defaultValue));
     }
 
     private final AtomicReference<Boolean> newValue = new AtomicReference<>();
@@ -36,6 +36,7 @@ public class BooleanSetting extends CustomModSetting<Boolean> {
                     newValue.set(!newValue.get());
                 });
         component.checked = newValue.get();
+        component.setActive(isEnabled());
 
         return component.getHitboxes().get(0).height;
     }

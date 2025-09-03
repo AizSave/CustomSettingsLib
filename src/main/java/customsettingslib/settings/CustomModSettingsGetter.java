@@ -37,6 +37,6 @@ public class CustomModSettingsGetter {
 
     public Object getSelection(String settingID) {
         SelectionSetting.Option[] options = ((SelectionSetting) customModSettings.settingsMap.get(settingID)).options;
-        return options[getInt(settingID)].object;
+        return options[getInt(settingID)].value;
     }
 }

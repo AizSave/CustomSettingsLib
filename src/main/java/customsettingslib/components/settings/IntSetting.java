@@ -1,11 +1,11 @@
 package customsettingslib.components.settings;
 
 import customsettingslib.components.CustomModSetting;
+import customsettingslib.components.vanillaimproved.SwitchableFormLocalSlider;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
 import necesse.gfx.forms.components.*;
 import necesse.gfx.forms.components.localComponents.FormLocalLabel;
-import necesse.gfx.forms.components.localComponents.FormLocalSlider;
 import necesse.gfx.gameFont.FontOptions;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,12 +24,12 @@ public class IntSetting extends CustomModSetting<Integer> {
 
     @Override
     public void addSaveData(SaveData saveData) {
-        saveData.addInt(getSaveKey(), value);
+        saveData.addInt(id, value);
     }
 
     @Override
     public void applyLoadData(LoadData loadData) {
-        value = loadData.getInt(getSaveKey(), defaultValue);
+        value = loadData.getInt(id, loadData.getInt(getOldSaveKey(), defaultValue));
     }
 
     @Override
@@ -49,11 +49,13 @@ public class IntSetting extends CustomModSetting<Integer> {
 
         int width = getWidth();
 
+        boolean isEnabled = isEnabled();
+
         if (displayMode == DisplayMode.BAR) {
             boolean onlyBar = min == 0 && max == 100;
             final AtomicReference<FormLabel> preview = new AtomicReference<>();
 
-            FormSlider slider = settingsForm.addComponent(new FormLocalSlider("settingsui", id, LEFT_MARGIN, y, newValue.get(), min, max, width - (onlyBar ? 0 : 80)), 15)
+            SwitchableFormLocalSlider slider = (SwitchableFormLocalSlider) settingsForm.addComponent(new SwitchableFormLocalSlider("settingsui", id, LEFT_MARGIN, y, newValue.get(), min, max, width - (onlyBar ? 0 : 80)), 15)
                     .onChanged((e) -> {
                         newValue.set(e.from.getValue());
                         if (!onlyBar && preview.get() != null) preview.get().setText(newValue.get().toString());
@@ -61,6 +63,8 @@ public class IntSetting extends CustomModSetting<Integer> {
 
             if (!onlyBar)
                 preview.set(settingsForm.addComponent(new FormLabel(newValue.get().toString(), new FontOptions(16), 0, width - 32, y + (slider.getTotalHeight() - 16) / 2, 64)));
+
+            slider.setActive(isEnabled);
 
             return slider.getTotalHeight();
         } else if (displayMode == DisplayMode.INPUT) {
@@ -88,11 +92,13 @@ public class IntSetting extends CustomModSetting<Integer> {
 
             input.setText(newValue.get().toString());
 
+            input.setActive(isEnabled);
+
             return 20;
         } else if (displayMode == DisplayMode.INPUT_BAR) {
             final AtomicReference<FormTextInput> input = new AtomicReference<>();
 
-            FormSlider slider = settingsForm.addComponent(new FormLocalSlider("settingsui", id, LEFT_MARGIN, y, newValue.get(), min, max, width - 80), 15)
+            SwitchableFormLocalSlider slider = (SwitchableFormLocalSlider) settingsForm.addComponent(new SwitchableFormLocalSlider("settingsui", id, LEFT_MARGIN, y, newValue.get(), min, max, width - 80), 15)
                     .onChanged((e) -> {
                         newValue.set(e.from.getValue());
                         if (input.get() != null) input.get().setText(newValue.get().toString());
@@ -125,6 +131,9 @@ public class IntSetting extends CustomModSetting<Integer> {
                     formTextInput.setCaretEnd();
                 }
             });
+
+            slider.setActive(isEnabled);
+            input.get().setActive(isEnabled);
 
             return slider.getTotalHeight();
         }

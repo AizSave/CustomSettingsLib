@@ -22,12 +22,12 @@ public class SelectionSetting extends CustomModSetting<Integer> {
 
     @Override
     public void addSaveData(SaveData saveData) {
-        saveData.addInt(getSaveKey(), value);
+        saveData.addInt(id, value);
     }
 
     @Override
     public void applyLoadData(LoadData loadData) {
-        value = loadData.getInt(getSaveKey(), defaultValue);
+        value = loadData.getInt(id, loadData.getInt(getOldSaveKey(), defaultValue));
     }
 
     @Override
@@ -54,6 +54,8 @@ public class SelectionSetting extends CustomModSetting<Integer> {
         selectionForm.setSelected(newValue.get(), options[newValue.get()].getDisplayName());
         selectionForm.onSelected((e) -> newValue.set(e.value));
 
+        selectionForm.setActive(isEnabled());
+
         return 20;
     }
 
@@ -64,17 +66,17 @@ public class SelectionSetting extends CustomModSetting<Integer> {
 
     public static class Option {
         public String name;
-        public Object object;
+        public Object value;
         public boolean staticMessage;
 
-        public Option(String name, Object object, boolean staticMessage) {
+        public Option(String name, Object value, boolean staticMessage) {
             this.name = name;
-            this.object = object;
+            this.value = value;
             this.staticMessage = staticMessage;
         }
 
-        public Option(String name, Object object) {
-            this(name, object, false);
+        public Option(String name, Object value) {
+            this(name, value, false);
         }
 
         public Option(String name) {

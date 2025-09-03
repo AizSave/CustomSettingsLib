@@ -13,6 +13,7 @@ import necesse.engine.save.SaveData;
 import java.awt.*;
 import java.util.List;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class CustomModSettings extends ModSettings {
     public static List<CustomModSettings> customModSettingsList = new ArrayList<>();
@@ -26,17 +27,38 @@ public class CustomModSettings extends ModSettings {
         return null;
     }
 
+    public static void addOnSavedListener(String modID, Runnable onSaved) {
+        for (CustomModSettings customModSettings : customModSettingsList) {
+            if (Objects.equals(customModSettings.mod.id, modID)) {
+                customModSettings.onSavedListeners.add(onSaved);
+                break;
+            }
+        }
+    }
+
     protected final int position;
 
     public final LoadedMod mod;
+
+    public final List<Runnable> onSavedListeners = new ArrayList<>();
+
+    public final List<String> serverSettings = new ArrayList<>();
+
     public final List<SettingsComponents> settingsDisplay = new ArrayList<>();
     public final List<CustomModSetting<?>> settingsList = new ArrayList<>();
     protected final Map<String, CustomModSetting<?>> settingsMap = new HashMap<>();
 
-    public CustomModSettings() {
+    public CustomModSettings(Runnable onSaved) {
         this.mod = LoadedMod.getRunningMod();
+
+        if(onSaved != null) this.onSavedListeners.add(onSaved);
+
         position = customModSettingsList.size();
         customModSettingsList.add(this);
+    }
+
+    public CustomModSettings() {
+        this(null);
     }
 
     @Override
@@ -51,6 +73,10 @@ public class CustomModSettings extends ModSettings {
         for (CustomModSetting<?> setting : settingsList) {
             setting.applyLoadData(loadData);
         }
+    }
+
+    public void addServerSettings(String... serverSettingsIDs) {
+        Collections.addAll(serverSettings, serverSettingsIDs);
     }
 
     public CustomModSettingsGetter getGetter() {

@@ -30,6 +30,7 @@ public class CustomModSettingsForm extends Form {
         FormContentBox settingsForm = this.addComponent(new FormContentBox(0, 26, this.getWidth(), this.getHeight() - 80 - 28));
 
         SettingsComponents.settingsForm = settingsForm;
+        SettingsComponents.customModSettings = customModSettings;
 
         FormFlow settingsFlow = new FormFlow(12);
         for (int i = 0; i < customModSettings.settingsDisplay.size(); i++) {
@@ -64,6 +65,9 @@ public class CustomModSettingsForm extends Form {
                 new FormLocalTextButton("ui", "savebutton", 4, this.getHeight() - 40, this.getWidth() / 2 - 6)
         );
         saveButton.onClicked(e -> {
+            for (Runnable onSavedListener : customModSettings.onSavedListeners) {
+                onSavedListener.run();
+            }
             for (CustomModSetting<?> value : customModSettings.settingsList) {
                 value.onSave();
             }

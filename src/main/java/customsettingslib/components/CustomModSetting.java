@@ -1,8 +1,10 @@
 package customsettingslib.components;
 
+import necesse.engine.GlobalData;
 import necesse.engine.modLoader.LoadedMod;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
+import necesse.engine.state.MainMenu;
 
 abstract public class CustomModSetting<T> extends SettingsComponents {
     public final String id;
@@ -35,7 +37,7 @@ abstract public class CustomModSetting<T> extends SettingsComponents {
 
     public abstract void applyLoadData(LoadData loadData);
 
-    protected String getSaveKey() {
+    protected String getOldSaveKey() {
         return mod.id + "_" + id;
     }
 
@@ -56,6 +58,6 @@ abstract public class CustomModSetting<T> extends SettingsComponents {
     }
 
     public boolean isEnabled() {
-        return true;
+        return !customModSettings.serverSettings.contains(id) || GlobalData.getCurrentState() instanceof MainMenu;
     }
 }

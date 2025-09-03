@@ -60,12 +60,25 @@ Since this library isn't published on Maven Central, you'll need to add it manua
 
 # Implementation
 
-1. In your mod entry class, add `initSettings()` returning a new instance of `ModSettings`:
+1. In your mod entry class, add `initSettings()` returning a new instance of `ModSettings`.
 
    Example:
    ```java
     @ModEntry
     public class SettingsModEntry {
+   
+        public void init() {
+            // ...
+        }
+    
+        public void postInit() {
+            // ...
+        }
+    
+        public void initResources() {
+            // ...
+        }
+   
         public ModSettings initSettings() {
             CustomModSettings customModSettings = new CustomModSettings();
             return customModSettings;
@@ -73,7 +86,7 @@ Since this library isn't published on Maven Central, you'll need to add it manua
    }
    ```
 
-2. Add a static `CustomModSettingsGetter` variable to the entry object and assign it via `getGetter()`:
+2. Add a static `CustomModSettingsGetter` variable to the entry object and assign it via `getGetter()`.
 
    Example:
    ```java
@@ -89,25 +102,13 @@ Since this library isn't published on Maven Central, you'll need to add it manua
     }
    ```
 
-3. Customize the settings to suit your mod:
+3. Customize the settings to suit your mod.
 
    Example:
    ```java
    @ModEntry
     public class SettingsModEntry { 
         public static CustomModSettingsGetter settingsGetter;
-
-        public void init() {
-            // ...
-        }
-    
-        public void postInit() {
-            // ...
-        }
-    
-        public void initResources() {
-            // ...
-        }
         
         public ModSettings initSettings() {
             CustomModSettings customModSettings = new CustomModSettings()
@@ -133,38 +134,29 @@ Since this library isn't published on Maven Central, you'll need to add it manua
                 .addBooleanSetting("boolean5", false)
                 .addColorSetting("color", new Color(255, 255, 255));
 
+            customModSettings.addServerSettings("boolean3", "boolean4", "int_bar1", "int_input");
+   
             settingsGetter = customModSettings.getGetter();
             return customModSettings;
         }
     }
    ```
+
    
-4. (Optional) Dependency Safety. If you want to throw an error when the library isn’t installed, wrap initialization in a `try/catch`:
+- (Optional) Dependency Safety. If you want to throw a custom error when the library isn't installed, wrap initialization in a `try/catch`.
 
-   Example:  
-
-   Mod Entry:
+   Example:
    ```java
-    @ModEntry
+   @ModEntry
     public class SettingsModEntry { 
         public static CustomModSettingsGetter settingsGetter;
-
-        public void init() {
-            // ...
-        }
-    
-        public void postInit() {
-            // ...
-        }
-    
-        public void initResources() {
-            // ...
-        }
         
         public ModSettings initSettings() {
             ModSettings modSettings;
             try {
-                modSettings = CustomSettings.init();
+                modSettings = new CustomModSettings();
+
+                settingsGetter = modSettings.getGetter();
             } catch (NoClassDefFoundError err) {
                 throw new RuntimeException(
                     "\n\nMissing dependency: \"Custom Settings Lib\"." +
@@ -176,40 +168,38 @@ Since this library isn't published on Maven Central, you'll need to add it manua
         }
     }
    ```
-   Make sure not to use any Custom Settings Lib import in the mod entry or in the mod preInit.  
 
-   Aside Class:
+- (Optional) On saved listener. If you need to run something when the `Save` button is pressed, add a lambda function as parameter in the constructor.
+
+  Example:
    ```java
-    public class CustomSettings {
+    @ModEntry
+    public class SettingsModEntry { 
         public static CustomModSettingsGetter settingsGetter;
+        
+        public ModSettings initSettings() {
+            ModSettings modSettings = new CustomModSettings(
+                () -> System.out.println("Mod settings saved")
+            );
+            
+            settingsGetter = modSettings.getGetter();
 
-        public static ModSettings init() {
-            CustomModSettings customModSettings = new CustomModSettings()
-                .addTextSeparator("section1")
-                .addBooleanSetting("boolean1", false)
-                .addBooleanSetting("boolean2", false)
-                .addBooleanSetting("boolean3", false)
-                .addBooleanSetting("boolean4", false)
-                .addStringSetting("string", "", 0, false)
-                
-                .addTextSeparator("section2")
-                .addSelectionSetting("selection", 0,
-                        new SelectionSetting.Option("option1"),
-                        new SelectionSetting.Option("option2"),
-                        new SelectionSetting.Option("option3")
-                )
-                .addIntSetting("int_bar1", 0, 0, 100, IntSetting.DisplayMode.BAR)
-                .addIntSetting("int_bar2", 0, 0, 200, IntSetting.DisplayMode.BAR)
-                .addIntSetting("int_input", 0, -10000, 10000, IntSetting.DisplayMode.INPUT)
-                .addIntSetting("int_input-bar", 0, -100, 100, IntSetting.DisplayMode.INPUT_BAR)
-                
-                .addTextSeparator("section3")
-                .addBooleanSetting("boolean5", false)
-                .addColorSetting("color", new Color(255, 255, 255));
-            settingsGetter = customModSettings.getGetter();
-            return customModSettings;
+            return modSettings;
         }
     }
+   ```
+  
+   If you want to add a listener to other mod's settings `Save` button do this instead:
+   ```java
+    @ModEntry
+    public class SettingsModEntry {
+  
+        public void postInit() {
+            CustomModSettings.addOnSavedListener(modID,
+                () -> System.out.println(modID + " settings saved")
+            );
+        }
+   }
    ```
 
 [Return to Index](#index)
@@ -222,24 +212,28 @@ The `public static CustomModSettingsGetter settingsGetter` gives access to your 
 
 Incorrect usage will throw errors, so ensure you use the correct getter method for the setting type
 
+**IMPORTANT: Settings should only be read on one side: either the client or the server**  
+Reading the same setting on both sides will cause desync issues.  
+Also, make sure to mark server-only settings in the initSettings() method.
+
 ```java
-    public void method() {
-        // "settingID" must be a valid ID of a custom setting
-        SettingsModEntry.settingsGetter.get(settingID);          // Returns Object
-        SettingsModEntry.settingsGetter.getBoolean(settingID);   // Boolean only
-        SettingsModEntry.settingsGetter.getString(settingID);    // String only
-        SettingsModEntry.settingsGetter.getInt(settingID);       // Int only
-        SettingsModEntry.settingsGetter.getFloat(settingID, 2);  // Float (from int) only
-        SettingsModEntry.settingsGetter.getSelection(settingID); // Selected option (Object)
-        SettingsModEntry.settingsGetter.getColor(settingID);     // Color only
-    }
+public void method() {
+    // "settingID" must be a valid ID of a custom setting
+    SettingsModEntry.settingsGetter.get(settingID);          // Returns Object
+    SettingsModEntry.settingsGetter.getBoolean(settingID);   // Boolean only
+    SettingsModEntry.settingsGetter.getString(settingID);    // String only
+    SettingsModEntry.settingsGetter.getInt(settingID);       // Int only
+    SettingsModEntry.settingsGetter.getFloat(settingID, 2);  // Float (from int) only
+    SettingsModEntry.settingsGetter.getSelection(settingID); // Selected option (Object)
+    SettingsModEntry.settingsGetter.getColor(settingID);     // Color only
+}
 ```
 
 To access **other mods' custom settings**, use:
 ```java
-    public void method() {
-        SettingsModEntry.getModSetting(modID, settingID);
-    }
+public void method() {
+    SettingsModEntry.getModSetting(modID, settingID);  // Returns Object
+}
 ```
 
 [Return to Index](#index)
@@ -281,10 +275,10 @@ circularoption=Circular
 ### Custom Components
 
 ```java
-    public CustomModSettings addCustomComponents(SettingsComponents settingsComponents) {
-        settingsDisplay.add(settingsComponents);
-        return this;
-    }
+public CustomModSettings addCustomComponents(SettingsComponents settingsComponents) {
+    settingsDisplay.add(settingsComponents);
+    return this;
+}
 ```
 
 Use this when you create your own custom components.
@@ -296,10 +290,10 @@ Use this when you create your own custom components.
 ### Text Separators
 
 ```java
-    public CustomModSettings addTextSeparator(String key) {
-        addCustomComponents(new TextSeparator(key));
-        return this;
-    }
+public CustomModSettings addTextSeparator(String key) {
+    addCustomComponents(new TextSeparator(key));
+    return this;
+}
 ```
 
 Adds a visual **section divider** in the settings UI. Useful for grouping related settings into categories.
@@ -316,20 +310,20 @@ Example:
 ### Paragraphs
 
 ```java
-    public CustomModSettings addParagraph(String key, int fontSize, int align, int spaceTop, int spaceBottom) {
-        addCustomComponents(new Paragraph(key, fontSize, align, spaceTop, spaceBottom));
-        return this;
-    }
+public CustomModSettings addParagraph(String key, int fontSize, int align, int spaceTop, int spaceBottom) {
+    addCustomComponents(new Paragraph(key, fontSize, align, spaceTop, spaceBottom));
+    return this;
+}
 
-    public CustomModSettings addParagraph(String key, int fontSize, int align) {
-        addCustomComponents(new Paragraph(key, fontSize, align, 4, 6));
-        return this;
-    }
+public CustomModSettings addParagraph(String key, int fontSize, int align) {
+    addCustomComponents(new Paragraph(key, fontSize, align, 4, 6));
+    return this;
+}
 
-    public CustomModSettings addParagraph(String key) {
-        addCustomComponents(new Paragraph(key, 12, -1, 4, 6));
-        return this;
-    }
+public CustomModSettings addParagraph(String key) {
+    addCustomComponents(new Paragraph(key, 12, -1, 4, 6));
+    return this;
+}
 ```
 
 Adds a visual **text** in the settings UI. Useful for explaining settings or make your own custom separators.
@@ -347,12 +341,12 @@ Example:
 ### Custom Settings
 
 ```java
-    public CustomModSettings addCustomSetting(CustomModSetting<?> customModSetting) {
-        settingsDisplay.add(customModSetting);
-        settingsList.add(customModSetting);
-        settingsMap.put(customModSetting.id, customModSetting);
-        return this;
-    }
+public CustomModSettings addCustomSetting(CustomModSetting<?> customModSetting) {
+    settingsDisplay.add(customModSetting);
+    settingsList.add(customModSetting);
+    settingsMap.put(customModSetting.id, customModSetting);
+    return this;
+}
 ```
 
 Use this when you create your own custom settings components.
@@ -364,13 +358,16 @@ Use this when you create your own custom settings components.
 ### Boolean Settings
 
 ```java
-    public CustomModSettings addBooleanSetting(String id, boolean defaultValue) {
-        addCustomSetting(new BooleanSetting(id, defaultValue));
-        return this;
-    }
+public CustomModSettings addBooleanSetting(String id, boolean defaultValue) {
+    addCustomSetting(new BooleanSetting(id, defaultValue));
+    return this;
+}
 ```
 
 Creates a simple **toggle (checkbox)**
+
+Useful getters:
+- getBoolean → Get the value.
 
 ```
 .addBooleanSetting("customhealthbar", false)
@@ -383,13 +380,16 @@ Creates a simple **toggle (checkbox)**
 ### String Settings
 
 ```java
-    public CustomModSettings addStringSetting(String id, String defaultValue, int maxLength, boolean large) {
-        addCustomSetting(new StringSetting(id, defaultValue, maxLength, large));
-        return this;
-    }
+public CustomModSettings addStringSetting(String id, String defaultValue, int maxLength, boolean large) {
+    addCustomSetting(new StringSetting(id, defaultValue, maxLength, large));
+    return this;
+}
 ```
 
 Creates a **text input field** with a maximum length
+
+Useful getters:
+- getString → Get the value.
 
 Example:
 ```
@@ -403,13 +403,17 @@ Example:
 ### Integer Settings
 
 ```java
-    public CustomModSettings addIntSetting(String id, int defaultValue, int min, int max, IntSetting.DisplayMode displayMode) {
-        addCustomSetting(new IntSetting(id, defaultValue, min, max, displayMode));
-        return this;
-    }
+public CustomModSettings addIntSetting(String id, int defaultValue, int min, int max, IntSetting.DisplayMode displayMode) {
+    addCustomSetting(new IntSetting(id, defaultValue, min, max, displayMode));
+    return this;
+}
 ```
 
 Adds an **integer-based setting** with a configurable range and display style
+
+Useful getters:
+- getInteger → Get the value.
+- getFloat → Get the value with any decimals. For example getFloat(settingID, 2) will return 0.5F if the value is 50.
 
 Display modes:
 - `INPUT` → text input field
@@ -428,13 +432,17 @@ Example:
 ### Selection Settings
 
 ```java
-    public CustomModSettings addSelectionSetting(String id, int defaultValue, SelectionSetting.Option... options) {
-        addCustomSetting(new SelectionSetting(id, defaultValue, options));
-        return this;
-    }
+public CustomModSettings addSelectionSetting(String id, int defaultValue, SelectionSetting.Option... options) {
+    addCustomSetting(new SelectionSetting(id, defaultValue, options));
+    return this;
+}
 ```
 
-Adds a **dropdown** with predefined options
+Adds a **dropdown** with predefined options. Does not include a text or name in the component. You can add one using addParagraph
+
+Useful getters:
+- getInt → Get the position of the selected option.
+- getSelection → Get the true value of the selected option as Object.
 
 Example:
 ```
@@ -446,9 +454,9 @@ Example:
 ```
 
 Each `Option` has three values:
-- `name` → The text displayed in the settings menu
-- `object` → The actual underlying value of the option (the `name` string is used by default if not provided)
-- `staticMessage` → True will use `settingsui` localization (`false` by default)
+- `name` → The text displayed in the settings menu.
+- `value` → The true value of the option (the `name` string is used by default if not provided). Can be ANY object.
+- `staticMessage` → True will not use `settingsui` localization but the string itself (`false` by default).
 
 [Return to Index](#index)
 
@@ -457,13 +465,17 @@ Each `Option` has three values:
 ### Color Settings
 
 ```java
-    public CustomModSettings addColorSetting(String id, Color defaultValue) {
-        addCustomSetting(new ColorSetting(id, defaultValue));
-        return this;
-    }
+public CustomModSettings addColorSetting(String id, Color defaultValue) {
+    addCustomSetting(new ColorSetting(id, defaultValue));
+    return this;
+}
 ```
 
 Adds a **color picker** to let the player choose an RGBA color
+
+Useful getters:
+- getInt → Get the ARGB value of the color.
+- getColor → Get the color.
 
 Example:
 ```
