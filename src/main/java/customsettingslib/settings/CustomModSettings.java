@@ -1,19 +1,18 @@
 package customsettingslib.settings;
 
-import customsettingslib.components.CustomModSetting;
-import customsettingslib.components.Paragraph;
-import customsettingslib.components.SettingsComponents;
-import customsettingslib.components.TextSeparator;
+import customsettingslib.components.*;
 import customsettingslib.components.settings.*;
+import necesse.engine.GlobalData;
 import necesse.engine.modLoader.LoadedMod;
 import necesse.engine.modLoader.ModSettings;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
+import necesse.engine.state.MainGame;
+import necesse.gfx.gameFont.FontOptions;
 
 import java.awt.*;
 import java.util.List;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class CustomModSettings extends ModSettings {
     public static List<CustomModSettings> customModSettingsList = new ArrayList<>();
@@ -21,7 +20,7 @@ public class CustomModSettings extends ModSettings {
     public static Object getModSetting(String modID, String settingID) {
         for (CustomModSettings customModSettings : customModSettingsList) {
             if (Objects.equals(customModSettings.mod.id, modID)) {
-                return customModSettings.settingsMap.get(settingID).getValue();
+                return customModSettings.getSetting(settingID);
             }
         }
         return null;
@@ -46,12 +45,13 @@ public class CustomModSettings extends ModSettings {
 
     public final List<SettingsComponents> settingsDisplay = new ArrayList<>();
     public final List<CustomModSetting<?>> settingsList = new ArrayList<>();
-    protected final Map<String, CustomModSetting<?>> settingsMap = new HashMap<>();
+    public final Map<String, CustomModSetting<?>> settingsMap = new HashMap<>();
+    public final Map<String, Object> serverDataSettings = new HashMap<>();
 
     public CustomModSettings(Runnable onSaved) {
         this.mod = LoadedMod.getRunningMod();
 
-        if(onSaved != null) this.onSavedListeners.add(onSaved);
+        if (onSaved != null) this.onSavedListeners.add(onSaved);
 
         position = customModSettingsList.size();
         customModSettingsList.add(this);
@@ -79,6 +79,12 @@ public class CustomModSettings extends ModSettings {
         Collections.addAll(serverSettings, serverSettingsIDs);
     }
 
+    public Object getSetting(String settingID) {
+        return serverSettings.contains(settingID) && GlobalData.getCurrentState() instanceof MainGame ?
+                serverDataSettings.get(settingID) :
+                settingsMap.get(settingID).getValue();
+    }
+
     public CustomModSettingsGetter getGetter() {
         return new CustomModSettingsGetter(this);
     }
@@ -93,18 +99,28 @@ public class CustomModSettings extends ModSettings {
         return this;
     }
 
-    public CustomModSettings addParagraph(String key, int fontSize, int align, int spaceTop, int spaceBottom) {
-        addCustomComponents(new Paragraph(key, fontSize, align, spaceTop, spaceBottom));
+    public CustomModSettings addParagraph(String key, FontOptions fontOptions, int align, int spaceTop, int spaceBottom) {
+        addCustomComponents(new Paragraph(key, fontOptions, align, spaceTop, spaceBottom));
         return this;
     }
 
-    public CustomModSettings addParagraph(String key, int fontSize, int align) {
-        addCustomComponents(new Paragraph(key, fontSize, align, 4, 6));
+    public CustomModSettings addParagraph(String key, FontOptions fontOptions, int align) {
+        addCustomComponents(new Paragraph(key, fontOptions, align, 0, 4));
+        return this;
+    }
+
+    public CustomModSettings addParagraph(String key, int spaceTop, int spaceBottom) {
+        addCustomComponents(new Paragraph(key, new FontOptions(12), -1, spaceTop, spaceBottom));
         return this;
     }
 
     public CustomModSettings addParagraph(String key) {
-        addCustomComponents(new Paragraph(key, 12, -1, 4, 6));
+        addCustomComponents(new Paragraph(key, new FontOptions(12), -1, 4, 6));
+        return this;
+    }
+
+    public CustomModSettings addSpace(int height) {
+        addCustomComponents(new Space(height));
         return this;
     }
 
@@ -125,8 +141,13 @@ public class CustomModSettings extends ModSettings {
         return this;
     }
 
+    public CustomModSettings addIntSetting(String id, int defaultValue, int min, int max, IntSetting.DisplayMode displayMode, int shownDecimals) {
+        addCustomSetting(new IntSetting(id, defaultValue, min, max, displayMode, shownDecimals));
+        return this;
+    }
+
     public CustomModSettings addIntSetting(String id, int defaultValue, int min, int max, IntSetting.DisplayMode displayMode) {
-        addCustomSetting(new IntSetting(id, defaultValue, min, max, displayMode));
+        addIntSetting(id, defaultValue, min, max, displayMode, 0);
         return this;
     }
 

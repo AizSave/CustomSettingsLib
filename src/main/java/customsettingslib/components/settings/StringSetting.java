@@ -1,6 +1,8 @@
 package customsettingslib.components.settings;
 
 import customsettingslib.components.CustomModSetting;
+import necesse.engine.network.PacketReader;
+import necesse.engine.network.PacketWriter;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
 import necesse.gfx.forms.components.FormInputSize;
@@ -12,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class StringSetting extends CustomModSetting<String> {
     protected int maxLength;
-    boolean large;
+    protected boolean large;
 
     public StringSetting(String id, String defaultValue, int maxLength, boolean large) {
         super(id, defaultValue);
@@ -35,6 +37,16 @@ public class StringSetting extends CustomModSetting<String> {
         value = loadData.getSafeString(id, loadData.getSafeString(getOldSaveKey(), defaultValue));
     }
 
+    @Override
+    public void setupPacket(PacketWriter writer) {
+        writer.putNextString(value);
+    }
+
+    @Override
+    public String applyPacket(PacketReader reader) {
+        return reader.getNextString();
+    }
+
     private final AtomicReference<String> newValue = new AtomicReference<>();
 
     @Override
@@ -50,7 +62,7 @@ public class StringSetting extends CustomModSetting<String> {
             String text = formTextInput.getText();
             newValue.set(text);
         });
-        input.setText(newValue.get());
+        input.setText(getTrueValue());
 
         input.setActive(isEnabled());
 

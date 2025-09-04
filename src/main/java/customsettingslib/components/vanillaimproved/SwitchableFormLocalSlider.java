@@ -22,9 +22,9 @@ import necesse.gfx.gameTooltips.TooltipLocation;
 import java.awt.*;
 
 public class SwitchableFormLocalSlider extends FormLocalSlider {
-    public boolean active = true;
-    public FontOptions fontOptions;
-    public int width;
+    protected boolean active = true;
+    protected FontOptions fontOptions;
+    protected int width;
 
     public SwitchableFormLocalSlider(String category, String key, int x, int y, int startValue, int minValue, int maxValue, int width, FontOptions fontOptions) {
         super(new LocalMessage(category, key), x, y, startValue, minValue, maxValue, width, fontOptions);
@@ -47,7 +47,7 @@ public class SwitchableFormLocalSlider extends FormLocalSlider {
         Color color = Settings.UI.activeElementColor;
         GameTexture texture = Settings.UI.slider.active;
 
-        if(!active) {
+        if (!active) {
             color = Settings.UI.inactiveTextColor;
         } else if (this.isGrabbed()) {
             color = Settings.UI.highlightElementColor;

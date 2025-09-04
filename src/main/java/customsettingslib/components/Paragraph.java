@@ -5,14 +5,14 @@ import necesse.gfx.gameFont.FontOptions;
 
 public class Paragraph extends SettingsComponents {
     protected String key;
-    int fontSize;
-    int align;
-    int spaceTop;
-    int spaceBottom;
+    protected FontOptions fontOptions;
+    protected int align;
+    protected int spaceTop;
+    protected int spaceBottom;
 
-    public Paragraph(String key, int fontSize, int align, int spaceTop, int spaceBottom) {
+    public Paragraph(String key, FontOptions fontOptions, int align, int spaceTop, int spaceBottom) {
         this.key = key;
-        this.fontSize = fontSize;
+        this.fontOptions = fontOptions;
         this.align = align;
         this.spaceTop = spaceTop;
         this.spaceBottom = spaceBottom;
@@ -31,7 +31,7 @@ public class Paragraph extends SettingsComponents {
         } else {
             startX = LEFT_MARGIN;
         }
-        FormLocalLabel label = settingsForm.addComponent(new FormLocalLabel("settingsui", key, new FontOptions(fontSize), align, startX, y + addedTop, width));
+        FormLocalLabel label = settingsForm.addComponent(new FormLocalLabel("settingsui", key, fontOptions, align, startX, y + addedTop, width));
         return label.getHeight() + addedTop + spaceBottom;
     }
 }

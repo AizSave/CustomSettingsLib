@@ -2,6 +2,8 @@ package customsettingslib.components;
 
 import necesse.engine.GlobalData;
 import necesse.engine.modLoader.LoadedMod;
+import necesse.engine.network.PacketReader;
+import necesse.engine.network.PacketWriter;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
 import necesse.engine.state.MainMenu;
@@ -37,12 +39,20 @@ abstract public class CustomModSetting<T> extends SettingsComponents {
 
     public abstract void applyLoadData(LoadData loadData);
 
+    public abstract void setupPacket(PacketWriter writer);
+
+    public abstract T applyPacket(PacketReader reader);
+
     protected String getOldSaveKey() {
         return mod.id + "_" + id;
     }
 
     public Object getValue() {
         return value;
+    }
+
+    public T getTrueValue() {
+        return (T) customModSettings.getSetting(this.id);
     }
 
     protected boolean isValidValue(Object value) {

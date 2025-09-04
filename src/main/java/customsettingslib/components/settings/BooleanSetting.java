@@ -1,6 +1,8 @@
 package customsettingslib.components.settings;
 
 import customsettingslib.components.CustomModSetting;
+import necesse.engine.network.PacketReader;
+import necesse.engine.network.PacketWriter;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
 import necesse.gfx.forms.components.FormCheckBox;
@@ -23,6 +25,16 @@ public class BooleanSetting extends CustomModSetting<Boolean> {
         value = loadData.getBoolean(id, loadData.getBoolean(getOldSaveKey(), defaultValue));
     }
 
+    @Override
+    public void setupPacket(PacketWriter writer) {
+        writer.putNextBoolean(value);
+    }
+
+    @Override
+    public Boolean applyPacket(PacketReader reader) {
+        return reader.getNextBoolean();
+    }
+
     private final AtomicReference<Boolean> newValue = new AtomicReference<>();
 
     @Override
@@ -35,7 +47,7 @@ public class BooleanSetting extends CustomModSetting<Boolean> {
                 .onClicked((e) -> {
                     newValue.set(!newValue.get());
                 });
-        component.checked = newValue.get();
+        component.checked = getTrueValue();
         component.setActive(isEnabled());
 
         return component.getHitboxes().get(0).height;

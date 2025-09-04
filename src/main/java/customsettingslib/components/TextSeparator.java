@@ -13,7 +13,7 @@ public class TextSeparator extends SettingsComponents {
     @Override
     public int addComponents(int y, int n) {
         int addedTop = n == 0 ? 0 : 10;
-        FormLocalLabel label = settingsForm.addComponent(new FormLocalLabel("settingsui", key, new FontOptions(20), 0,  LEFT_MARGIN + getWidth() / 2, y + addedTop, getWidth()));
+        FormLocalLabel label = settingsForm.addComponent(new FormLocalLabel("settingsui", key, new FontOptions(20), 0, LEFT_MARGIN + getWidth() / 2, y + addedTop, getWidth()));
         return label.getHeight() + addedTop + 6;
     }
 }

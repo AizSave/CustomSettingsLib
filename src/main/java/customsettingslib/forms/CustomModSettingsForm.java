@@ -55,13 +55,13 @@ public class CustomModSettingsForm extends Form {
         );
         restoreButton.onClicked(e -> {
             for (CustomModSetting<?> value : customModSettings.settingsList) {
-                value.restoreToDefault();
+                if (value.isEnabled()) value.restoreToDefault();
             }
             for (Runnable onSavedListener : customModSettings.onSavedListeners) {
                 onSavedListener.run();
             }
             for (CustomModSetting<?> value : customModSettings.settingsList) {
-                value.onSave();
+                if (value.isEnabled()) value.onSave();
             }
             Settings.saveClientSettings();
             resetComponents(customModSettings);
@@ -75,7 +75,7 @@ public class CustomModSettingsForm extends Form {
                 onSavedListener.run();
             }
             for (CustomModSetting<?> value : customModSettings.settingsList) {
-                value.onSave();
+                if (value.isEnabled()) value.onSave();
             }
             Settings.saveClientSettings();
         });

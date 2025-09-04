@@ -12,7 +12,7 @@ public class CustomModSettingsGetter {
     }
 
     public Object get(String settingID) {
-        return customModSettings.settingsMap.get(settingID).getValue();
+        return customModSettings.getSetting(settingID);
     }
 
     public boolean getBoolean(String settingID) {
@@ -28,7 +28,7 @@ public class CustomModSettingsGetter {
     }
 
     public float getFloat(String settingID, int decimals) {
-        return (float) getInt(settingID) / (10F * decimals);
+        return (float) getInt(settingID) / (float) Math.pow(10, decimals);
     }
 
     public Color getColor(String settingID) {

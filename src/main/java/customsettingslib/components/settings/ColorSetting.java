@@ -3,6 +3,8 @@ package customsettingslib.components.settings;
 import customsettingslib.components.CustomModSetting;
 import customsettingslib.components.vanillaimproved.SwitchableFormLocalSlider;
 import necesse.engine.gameLoop.tickManager.TickManager;
+import necesse.engine.network.PacketReader;
+import necesse.engine.network.PacketWriter;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
 import necesse.engine.util.GameMath;
@@ -37,6 +39,16 @@ public class ColorSetting extends CustomModSetting<Integer> {
     }
 
     @Override
+    public void setupPacket(PacketWriter writer) {
+        writer.putNextInt(value);
+    }
+
+    @Override
+    public Integer applyPacket(PacketReader reader) {
+        return reader.getNextInt();
+    }
+
+    @Override
     public Object getValue() {
         return getColor();
     }
@@ -47,28 +59,30 @@ public class ColorSetting extends CustomModSetting<Integer> {
     public int addComponents(int y, int n) {
         color.set(getColor());
 
+        Color firstShownColor = new Color(getTrueValue());
+
         boolean isEnabled = isEnabled();
 
         int width = getWidth();
 
         settingsForm.addComponent(new FormLocalLabel("settingsui", id, new FontOptions(12), 0, (width - 80) / 2, y + 4, width));
 
-        SwitchableFormLocalSlider red = settingsForm.addComponent(new SwitchableFormLocalSlider("ui", "colorred", LEFT_MARGIN, y + 20, color.get().getRed(), 0, 255, width - 80, new FontOptions(12)));
+        SwitchableFormLocalSlider red = settingsForm.addComponent(new SwitchableFormLocalSlider("ui", "colorred", LEFT_MARGIN, y + 20, firstShownColor.getRed(), 0, 255, width - 80, new FontOptions(12)));
         red.onChanged((e) -> {
             Color tempColor = color.get();
             color.set(new Color(e.from.getValue(), tempColor.getGreen(), tempColor.getBlue(), tempColor.getAlpha()));
         });
-        SwitchableFormLocalSlider green = settingsForm.addComponent(new SwitchableFormLocalSlider("ui", "colorgreen", LEFT_MARGIN, red.getY() + red.getTotalHeight() + 4, color.get().getGreen(), 0, 255, width - 80, new FontOptions(12)));
+        SwitchableFormLocalSlider green = settingsForm.addComponent(new SwitchableFormLocalSlider("ui", "colorgreen", LEFT_MARGIN, red.getY() + red.getTotalHeight() + 4, firstShownColor.getGreen(), 0, 255, width - 80, new FontOptions(12)));
         green.onChanged((e) -> {
             Color tempColor = color.get();
             color.set(new Color(tempColor.getRed(), e.from.getValue(), tempColor.getBlue(), tempColor.getAlpha()));
         });
-        SwitchableFormLocalSlider blue = settingsForm.addComponent(new SwitchableFormLocalSlider("ui", "colorblue", LEFT_MARGIN, green.getY() + green.getTotalHeight() + 4, color.get().getBlue(), 0, 255, width - 80, new FontOptions(12)));
+        SwitchableFormLocalSlider blue = settingsForm.addComponent(new SwitchableFormLocalSlider("ui", "colorblue", LEFT_MARGIN, green.getY() + green.getTotalHeight() + 4, firstShownColor.getBlue(), 0, 255, width - 80, new FontOptions(12)));
         blue.onChanged((e) -> {
             Color tempColor = color.get();
             color.set(new Color(tempColor.getRed(), tempColor.getGreen(), e.from.getValue(), tempColor.getAlpha()));
         });
-        SwitchableFormLocalSlider alpha = settingsForm.addComponent(new SwitchableFormLocalSlider("ui", "alpha", LEFT_MARGIN, blue.getY() + blue.getTotalHeight() + 4, color.get().getAlpha(), 0, 255, width - 80, new FontOptions(12)));
+        SwitchableFormLocalSlider alpha = settingsForm.addComponent(new SwitchableFormLocalSlider("ui", "alpha", LEFT_MARGIN, blue.getY() + blue.getTotalHeight() + 4, firstShownColor.getAlpha(), 0, 255, width - 80, new FontOptions(12)));
         alpha.onChanged((e) -> {
             Color tempColor = color.get();
             color.set(new Color(tempColor.getRed(), tempColor.getGreen(), tempColor.getBlue(), e.from.getValue()));
@@ -120,7 +134,7 @@ public class ColorSetting extends CustomModSetting<Integer> {
         @Override
         public void draw(TickManager tickManager, PlayerMob perspective, Rectangle renderBox) {
             super.draw(tickManager, perspective, renderBox);
-            Renderer.initQuadDraw(56, 56).color(color.get()).draw(getX() + 4, getY() + 4);
+            Renderer.initQuadDraw(56, 56).color(isEnabled() ? color.get() : new Color(getTrueValue())).draw(getX() + 4, getY() + 4);
         }
     }
 

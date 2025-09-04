@@ -22,6 +22,7 @@ You're free to use this library for:
    - [Custom Components](#custom-components)
    - [Text Separators](#text-separators)
    - [Paragraphs](#paragraphs)
+   - [Spaces](#spaces)
    - [Custom Settings](#custom-settings)
    - [Boolean Settings](#boolean-settings)
    - [String Settings](#string-settings)
@@ -102,7 +103,7 @@ Since this library isn't published on Maven Central, you'll need to add it manua
     }
    ```
 
-3. Customize the settings to suit your mod.
+3. Customize the settings to suit your mod. Also make sure to mark the settings that will not be client-only.
 
    Example:
    ```java
@@ -125,10 +126,10 @@ Since this library isn't published on Maven Central, you'll need to add it manua
                         new SelectionSetting.Option("option2"),
                         new SelectionSetting.Option("option3")
                 )
-                .addIntSetting("int_bar1", 0, 0, 100, IntSetting.DisplayMode.BAR)
+                .addIntSetting("int_bar1", 0, 0, 100, IntSetting.DisplayMode.BAR, 2)
                 .addIntSetting("int_bar2", 0, 0, 200, IntSetting.DisplayMode.BAR)
                 .addIntSetting("int_input", 0, -10000, 10000, IntSetting.DisplayMode.INPUT)
-                .addIntSetting("int_input-bar", 0, -100, 100, IntSetting.DisplayMode.INPUT_BAR)
+                .addIntSetting("int_input-bar", 0, -100, 100, IntSetting.DisplayMode.INPUT_BAR, 1)
                 
                 .addTextSeparator("section3")
                 .addBooleanSetting("boolean5", false)
@@ -211,10 +212,6 @@ Since this library isn't published on Maven Central, you'll need to add it manua
 The `public static CustomModSettingsGetter settingsGetter` gives access to your defined settings
 
 Incorrect usage will throw errors, so ensure you use the correct getter method for the setting type
-
-**IMPORTANT: Settings should only be read on one side: either the client or the server**  
-Reading the same setting on both sides will cause desync issues.  
-Also, make sure to mark server-only settings in the initSettings() method.
 
 ```java
 public void method() {
@@ -310,18 +307,23 @@ Example:
 ### Paragraphs
 
 ```java
-public CustomModSettings addParagraph(String key, int fontSize, int align, int spaceTop, int spaceBottom) {
-    addCustomComponents(new Paragraph(key, fontSize, align, spaceTop, spaceBottom));
+public CustomModSettings addParagraph(String key, FontOptions fontOptions, int align, int spaceTop, int spaceBottom) {
+    addCustomComponents(new Paragraph(key, fontOptions, align, spaceTop, spaceBottom));
     return this;
 }
 
-public CustomModSettings addParagraph(String key, int fontSize, int align) {
-    addCustomComponents(new Paragraph(key, fontSize, align, 4, 6));
+public CustomModSettings addParagraph(String key, FontOptions fontOptions, int align) {
+    addCustomComponents(new Paragraph(key, fontOptions, align, 4, 6));
+    return this;
+}
+
+public CustomModSettings addParagraph(String key, int spaceTop, int spaceBottom) {
+    addCustomComponents(new Paragraph(key, new FontOptions(12), -1, spaceTop, spaceBottom));
     return this;
 }
 
 public CustomModSettings addParagraph(String key) {
-    addCustomComponents(new Paragraph(key, 12, -1, 4, 6));
+    addCustomComponents(new Paragraph(key, new FontOptions(12), -1, 4, 6));
     return this;
 }
 ```
@@ -331,6 +333,26 @@ Adds a visual **text** in the settings UI. Useful for explaining settings or mak
 Example:
 ```
 .addParagraph("customhealthbartext")
+```
+
+[Return to Index](#index)
+
+---
+
+### Spaces
+
+```java
+public CustomModSettings addSpace(int height) {
+    addCustomComponents(new Space(height));
+    return this;
+}
+```
+
+Adds a **blank space** in the settings UI.
+
+Example:
+```
+.addSpace(16)
 ```
 
 [Return to Index](#index)
@@ -403,13 +425,20 @@ Example:
 ### Integer Settings
 
 ```java
+public CustomModSettings addIntSetting(String id, int defaultValue, int min, int max, IntSetting.DisplayMode displayMode, int shownDecimals) {
+    addCustomSetting(new IntSetting(id, defaultValue, min, max, displayMode, shownDecimals));
+    return this;
+}
+
 public CustomModSettings addIntSetting(String id, int defaultValue, int min, int max, IntSetting.DisplayMode displayMode) {
-    addCustomSetting(new IntSetting(id, defaultValue, min, max, displayMode));
+    addIntSetting(id, defaultValue, min, max, displayMode, 0);
     return this;
 }
 ```
 
 Adds an **integer-based setting** with a configurable range and display style
+
+If you add decimals, internally it will still behave like an int and will only be an aesthetic change
 
 Useful getters:
 - getInteger → Get the value.

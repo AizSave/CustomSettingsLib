@@ -4,6 +4,8 @@ import customsettingslib.components.CustomModSetting;
 import necesse.engine.localization.message.GameMessage;
 import necesse.engine.localization.message.LocalMessage;
 import necesse.engine.localization.message.StaticMessage;
+import necesse.engine.network.PacketReader;
+import necesse.engine.network.PacketWriter;
 import necesse.engine.save.LoadData;
 import necesse.engine.save.SaveData;
 import necesse.gfx.forms.components.FormDropdownSelectionButton;
@@ -31,6 +33,16 @@ public class SelectionSetting extends CustomModSetting<Integer> {
     }
 
     @Override
+    public void setupPacket(PacketWriter writer) {
+        writer.putNextInt(value);
+    }
+
+    @Override
+    public Integer applyPacket(PacketReader reader) {
+        return reader.getNextInt();
+    }
+
+    @Override
     protected boolean isValidValue(Object value) {
         return super.isValidValue(value) && inBounds((Integer) value);
     }
@@ -51,7 +63,7 @@ public class SelectionSetting extends CustomModSetting<Integer> {
         for (int i = 0; i < options.length; i++) {
             selectionForm.options.add(i, options[i].getDisplayName());
         }
-        selectionForm.setSelected(newValue.get(), options[newValue.get()].getDisplayName());
+        selectionForm.setSelected(getTrueValue(), options[getTrueValue()].getDisplayName());
         selectionForm.onSelected((e) -> newValue.set(e.value));
 
         selectionForm.setActive(isEnabled());
