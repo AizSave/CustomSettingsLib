@@ -131,7 +131,7 @@ public class IntSetting extends CustomModSetting<Integer> {
                     formTextInput.setCaretEnd();
                 }
             });
-            input.setRegexMatchFull("[0-9]+(\\.[0-9]+)?");
+            input.setRegexMatchFull("-?[0-9]+(\\.[0-9]+)?");
 
             input.setText(getTrueValue().toString());
 
@@ -151,7 +151,7 @@ public class IntSetting extends CustomModSetting<Integer> {
             input.set(
                     settingsForm.addComponent(new FormTextInput(width - 64, y + (slider.getTotalHeight() - 20) / 2, FormInputSize.SIZE_20, 64, Math.max(String.valueOf(max).length(), String.valueOf(min).length())))
             );
-            input.get().setRegexMatchFull("[0-9]+(\\.[0-9]+)?");
+            input.get().setRegexMatchFull("-?[0-9]+(\\.[0-9]+)?");
 
             input.get().setText(getTrueValue().toString());
 
