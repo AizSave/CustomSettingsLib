@@ -30,6 +30,7 @@ public class SwitchableFormLocalSlider extends FormLocalSlider {
         super(new LocalMessage(category, key), x, y, startValue, minValue, maxValue, width, fontOptions);
         this.fontOptions = fontOptions;
         this.width = width;
+        this.allowScroll = false;
     }
 
     public SwitchableFormLocalSlider(String category, String key, int x, int y, int startValue, int minValue, int maxValue, int width) {

@@ -58,7 +58,7 @@ public class IntSetting extends CustomModSetting<Integer> {
         return min <= value && value <= max;
     }
 
-    private final AtomicReference<Integer> newValue = new AtomicReference<>();
+    public final AtomicReference<Integer> newValue = new AtomicReference<>();
 
     @Override
     public int addComponents(int y, int n) {

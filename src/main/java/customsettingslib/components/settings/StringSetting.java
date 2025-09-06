@@ -47,7 +47,7 @@ public class StringSetting extends CustomModSetting<String> {
         return reader.getNextString();
     }
 
-    private final AtomicReference<String> newValue = new AtomicReference<>();
+    public final AtomicReference<String> newValue = new AtomicReference<>();
 
     @Override
     public int addComponents(int y, int n) {

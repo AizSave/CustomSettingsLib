@@ -35,7 +35,7 @@ public class BooleanSetting extends CustomModSetting<Boolean> {
         return reader.getNextBoolean();
     }
 
-    private final AtomicReference<Boolean> newValue = new AtomicReference<>();
+    public final AtomicReference<Boolean> newValue = new AtomicReference<>();
 
     @Override
     public int addComponents(int y, int n) {

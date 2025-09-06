@@ -51,7 +51,7 @@ public class SelectionSetting extends CustomModSetting<Integer> {
         return 0 <= value && value <= options.length;
     }
 
-    private final AtomicReference<Integer> newValue = new AtomicReference<>();
+    public final AtomicReference<Integer> newValue = new AtomicReference<>();
 
     @Override
     public int addComponents(int y, int n) {

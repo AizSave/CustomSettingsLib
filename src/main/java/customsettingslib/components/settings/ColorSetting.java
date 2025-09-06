@@ -48,7 +48,7 @@ public class ColorSetting extends CustomModSetting<Integer> {
         return reader.getNextInt();
     }
 
-    private final AtomicReference<Color> color = new AtomicReference<>();
+    public final AtomicReference<Color> color = new AtomicReference<>();
 
     @Override
     public int addComponents(int y, int n) {
