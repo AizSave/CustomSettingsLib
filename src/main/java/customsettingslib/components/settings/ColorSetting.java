@@ -48,18 +48,13 @@ public class ColorSetting extends CustomModSetting<Integer> {
         return reader.getNextInt();
     }
 
-    @Override
-    public Object getValue() {
-        return getColor();
-    }
-
     private final AtomicReference<Color> color = new AtomicReference<>();
 
     @Override
     public int addComponents(int y, int n) {
         color.set(getColor());
 
-        Color firstShownColor = new Color(getTrueValue());
+        Color firstShownColor = new Color(getTrueValue(), true);
 
         boolean isEnabled = isEnabled();
 

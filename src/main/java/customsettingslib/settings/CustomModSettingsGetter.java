@@ -32,7 +32,7 @@ public class CustomModSettingsGetter {
     }
 
     public Color getColor(String settingID) {
-        return (Color) get(settingID);
+        return new Color(getInt(settingID), true);
     }
 
     public Object getSelection(String settingID) {
