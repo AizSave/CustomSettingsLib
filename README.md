@@ -107,7 +107,7 @@ Since this library isn't published on Maven Central, you'll need to add it manua
 
    Example:
    ```java
-   @ModEntry
+    @ModEntry
     public class SettingsModEntry { 
         public static CustomModSettingsGetter settingsGetter;
         
@@ -141,23 +141,19 @@ Since this library isn't published on Maven Central, you'll need to add it manua
             return customModSettings;
         }
     }
-   ```
+   ``` 
 
    
 - (Optional) Dependency Safety. If you want to throw a custom error when the library isn't installed, wrap initialization in a `try/catch`.
 
    Example:
    ```java
-   @ModEntry
-    public class SettingsModEntry { 
-        public static CustomModSettingsGetter settingsGetter;
-        
+    @ModEntry
+    public class SettingsModEntry {      
         public ModSettings initSettings() {
-            CustomModSettings modSettings;
+            ModSettings modSettings;
             try {
-                modSettings = new CustomModSettings();
-
-                settingsGetter = modSettings.getGetter();
+                modSettings = OtherClass.initSettings();
             } catch (NoClassDefFoundError err) {
                 throw new RuntimeException(
                     "\n\nMissing dependency: \"Custom Settings Lib\"." +
@@ -169,6 +165,19 @@ Since this library isn't published on Maven Central, you'll need to add it manua
         }
     }
    ```
+   ```java
+    public class OtherClass { 
+        public static CustomModSettingsGetter settingsGetter;
+        
+        public static ModSettings initSettings() {
+            CustomModSettings modSettings = new CustomModSettings();
+            settingsGetter = modSettings.getGetter();
+            return modSettings;
+        }
+    }
+   ```
+    Will not work if you extend a Custom Settings Lib class.  
+
 
 - (Optional) On saved listener. If you need to run something when the `Save` button is pressed, add a lambda function as parameter in the constructor.
 
