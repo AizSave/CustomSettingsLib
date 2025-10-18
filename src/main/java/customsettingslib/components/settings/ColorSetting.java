@@ -35,7 +35,7 @@ public class ColorSetting extends CustomModSetting<Integer> {
 
     @Override
     public void applyLoadData(LoadData loadData) {
-        value = loadData.getInt(id, loadData.getInt(getOldSaveKey(), defaultValue));
+        value = loadData.getInt(id, defaultValue);
     }
 
     @Override

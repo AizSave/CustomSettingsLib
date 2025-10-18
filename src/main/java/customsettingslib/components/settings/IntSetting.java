@@ -36,7 +36,7 @@ public class IntSetting extends CustomModSetting<Integer> {
 
     @Override
     public void applyLoadData(LoadData loadData) {
-        value = loadData.getInt(id, loadData.getInt(getOldSaveKey(), defaultValue));
+        value = loadData.getInt(id, defaultValue);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class IntSetting extends CustomModSetting<Integer> {
                         if (number > max) {
                             number = max;
                         }
-                        if(ensure.get()) {
+                        if (ensure.get()) {
                             ensure.set(false);
                             formTextInput.setText(String.valueOf(number));
                         } else {
@@ -118,7 +118,7 @@ public class IntSetting extends CustomModSetting<Integer> {
                         if (number > max) {
                             number = max;
                         }
-                        if(ensure.get()) {
+                        if (ensure.get()) {
                             ensure.set(false);
                             formTextInput.setText(String.valueOf(number / (float) Math.pow(10, decimals)));
                         } else {
@@ -168,7 +168,7 @@ public class IntSetting extends CustomModSetting<Integer> {
                         if (number > max) {
                             number = max;
                         }
-                        if(ensure.get()) {
+                        if (ensure.get()) {
                             ensure.set(false);
                             formTextInput.setText(String.valueOf(number));
                         } else {
@@ -186,7 +186,7 @@ public class IntSetting extends CustomModSetting<Integer> {
                         if (number > max) {
                             number = max;
                         }
-                        if(ensure.get()) {
+                        if (ensure.get()) {
                             ensure.set(false);
                             formTextInput.setText(String.valueOf(number / (float) Math.pow(10, decimals)));
                         } else {

@@ -22,7 +22,7 @@ public class BooleanSetting extends CustomModSetting<Boolean> {
 
     @Override
     public void applyLoadData(LoadData loadData) {
-        value = loadData.getBoolean(id, loadData.getBoolean(getOldSaveKey(), defaultValue));
+        value = loadData.getBoolean(id, defaultValue);
     }
 
     @Override

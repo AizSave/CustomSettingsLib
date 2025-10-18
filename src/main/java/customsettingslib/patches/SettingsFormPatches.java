@@ -7,6 +7,7 @@ import necesse.engine.modLoader.annotations.ModMethodPatch;
 import necesse.engine.network.client.Client;
 import necesse.engine.window.GameWindow;
 import necesse.engine.window.WindowManager;
+import necesse.gfx.forms.ContinueComponentManager;
 import necesse.gfx.forms.Form;
 import necesse.gfx.forms.components.FormComponent;
 import necesse.gfx.forms.components.FormTextButton;
@@ -23,7 +24,7 @@ public class SettingsFormPatches {
     public static SettingsForm settingsForm;
     public static ModSettingsForm modSettingsForm;
 
-    @ModConstructorPatch(target = SettingsForm.class, arguments = {Client.class,})
+    @ModConstructorPatch(target = SettingsForm.class, arguments = {Client.class, ContinueComponentManager.class})
     public static class constructor {
         @Advice.OnMethodExit
         public static void onExit(@Advice.This SettingsForm This) {

@@ -43,10 +43,6 @@ abstract public class CustomModSetting<T> extends SettingsComponents {
 
     public abstract T applyPacket(PacketReader reader);
 
-    protected String getOldSaveKey() {
-        return mod.id + "_" + id;
-    }
-
     public Object getValue() {
         return value;
     }

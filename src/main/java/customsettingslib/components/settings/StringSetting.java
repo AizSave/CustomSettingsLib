@@ -34,7 +34,7 @@ public class StringSetting extends CustomModSetting<String> {
 
     @Override
     public void applyLoadData(LoadData loadData) {
-        value = loadData.getSafeString(id, loadData.getSafeString(getOldSaveKey(), defaultValue));
+        value = loadData.getSafeString(id, defaultValue);
     }
 
     @Override
